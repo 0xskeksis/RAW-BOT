@@ -1,6 +1,13 @@
-#include <stdio.h>
+// #include <stdio.h>
+//
+
+
 
 int
 main(){
-	printf("fmdkls\n");
+	while(1){
+		volatile int i = 42;
+		if (i == 42)
+			i++;
+	}
 }

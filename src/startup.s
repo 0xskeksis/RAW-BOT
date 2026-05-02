@@ -1,3 +1,14 @@
+.syntax unified
+.cpu cortex-m4
+.thumb
+
+.section .isr_vector,"a",%progbits
+.word _stack_end
+.word Reset_Handler
+
+.section .text
+.global Reset_Handler
+
 Reset_Handler:
 	LDR R0, =_data_load
 	LDR R1, =_data_start

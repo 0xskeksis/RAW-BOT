@@ -1,42 +1,47 @@
-/*Little Explanation of all the sections:
- * - .text for code & constants
- * - .bss for unitialized data
- * - .stack for our stack
- * - .data for initialized data
- * */
-
 ENTRY(Reset_Handler)
 
 MEMORY
 {
-	FLASH	(rx)	: ORIGIN = 0x08000000, LENGTH = 512K /* change the size by 512K if NUCLEO-F446RE */
-	RAM		(rwx)	: ORIGIN = 0x20000000, LENGTH = 128K	/* same but by 128K */
+    FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 512K
+    RAM   (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
 }
 
 SECTIONS
 {
-	.text : ALIGN(4)
-	{
-		KEEP(*(.vector*))			/* KEEP is here to say: "keep this sections even if nobody use it" *(.vector) to select all the sections starting with .vector */
-		*(.text*)
-	} > FLASH
+    .isr_vector 0x08000000 :
+    {
+		. = ALIGN(4);
+        KEEP(*(.isr_vector))
+		. = ALIGN(4);
+    } > FLASH
 
-	.bss (NOLOAD) :					/* NOLOAD to tell to not load the data (because it's all empty) */
-	{
-		*(.bss*)
-		*(COMMON)					/* COMMON is where the compiler put global */
-	} > RAM
+    .text :
+    {
+		. = ALIGN(4);
+        *(.text*)
+    } > FLASH
 
-	.stack (NOLOAD) :
-	{
-		. = ALIGN(8);
-		_stack_start = .;
-		. += 0x1000; /* 4ko */
-		_stack_end = .;
-	} > RAM
+    .data :
+    {
+        _data_load = LOADADDR(.data);
+        _data_start = .;
+        *(.data*)
+        _data_end = .;
+    } > RAM AT > FLASH
 
-	.data :
-	{
-		*(.data*);
-	} > RAM AT > FLASH				/* "> ram" is the VMA, "> rom" is the LMA */
+    .bss (NOLOAD) :
+    {
+        _bss_start = .;
+        *(.bss*)
+        *(COMMON)
+        _bss_end = .;
+    } > RAM
+
+    /* stack pointer = top of RAM */
+    _stack_end = ORIGIN(RAM) + LENGTH(RAM);
+	/DISCARD/ :
+    {
+        *(.ARM.exidx*)
+        *(.ARM.attributes)
+    }
 }
