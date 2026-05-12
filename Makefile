@@ -20,6 +20,7 @@ LD_SCRIPT		:= linker.ld
 CFLAGS			:= -mcpu=cortex-m4 -mthumb -ffreestanding -g -Wall -Wextra -O0
 ASFLAGS			:= $(CFLAGS)
 LDFLAGS			:= -nostdlib -nostartfiles -nodefaultlibs -T $(LD_SCRIPT)
+IFLAGS			:= -I ./include
 
 OBJCOPY_FLAGS	:= -O binary
 
@@ -31,10 +32,10 @@ $(ASM_OBJ): $(ASM_SRC)
 	$(CC) $(ASFLAGS) -c $< -o $@
 
 $(C_OBJ): $(C_SRC)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
 
 $(ELF): $(ASM_OBJ) $(C_OBJ)
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) $(LDFLAGS) $(IFLAGS) -o $@ $^
 
 $(BIN): $(ELF)
 	$(OBJCOPY) $(OBJCOPY_FLAGS) $< $@
