@@ -1,7 +1,6 @@
 #include "gpio.h"
-#include "utils.h"
-
-//PC13 pin -
+#include "memory_map.h"
+#include "raw_bot.h"
 
 int
 main(){
@@ -9,8 +8,10 @@ main(){
 	volatile t_gpio	*gpioa = (t_gpio *)GPIOA_BASE;
 	volatile t_gpio	*gpioc = (t_gpio *)GPIOC_BASE;
 
-	led_init(rcc, gpioa);	
-	button_init(rcc, gpioc);	
+	rcc_enable(rcc, GPIOAEN);
+	gpio_init(gpioa, 5, PIN_STATE_OUTPUT);
+	rcc_enable(rcc, GPIOCEN);
+	gpio_init(gpioc, 13, PIN_STATE_INPUT);
 	bool btn_state = false;
 	while(1){
 		btn_state = get_button_state(gpioc);

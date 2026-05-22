@@ -15,6 +15,10 @@
 #define GPIOC_BASE	0x40020800
 #define GPIOD_BASE	0x40020C00
 
+
+#define LED_PIN 5
+#define BTN_PIN 13
+
 enum e_pin_state{
     PIN_STATE_INPUT = 0,
     PIN_STATE_OUTPUT,

@@ -13,7 +13,9 @@ ASM_SRC		:= src/startup.s
 C_SRCS_DIR	:= src
 C_SRCS		:= main.c \
 			   gpio.c \
-			   utils.c
+			   utils.c \
+			   rcc.c \
+
 
 SRCS		:= $(addprefix $(C_SRCS_DIR)/, $(C_SRCS))
 

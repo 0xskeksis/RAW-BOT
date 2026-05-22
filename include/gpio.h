@@ -20,11 +20,11 @@ enum e_gpio_value
     GPIO_HIGH = 1,
 };
 
-void led_init(t_rcc *rcc, t_gpio *gpioa);
 void led_off(t_gpio *gpioa);
 void led_on(t_gpio *gpioa);
 
-void button_init(t_rcc *rcc, t_gpio *gpioa);
 bool get_button_state(t_gpio *gpioc);
+
+void	gpio_init(t_gpio *port, uint8_t pin, uint32_t mode);
 
 #endif

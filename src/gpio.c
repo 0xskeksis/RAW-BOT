@@ -1,37 +1,41 @@
 #include "gpio.h"
 #include <stdbool.h>
+#include <stdint.h>
 #include "memory_map.h"
 
-#define LED_BS5 (1U << 5)
-#define LED_BR5 (1U << 21)
-#define BTN_PIN (1U << 13)
+void
+gpio_init(t_gpio *port, uint8_t pin, uint32_t mode){
+	uint32_t	value = mode << (pin * 2);
+	uint32_t	mask = 0b11 << (pin * 2);
+
+	port->moder &= ~mask;
+	port->moder |= value;
+}
 
 void
-led_init(t_rcc *rcc, t_gpio *gpioa){
-	rcc->ahb1enr |= GPIOAEN;
-	gpioa->moder |= (1UL << 10);
-	gpioa->moder &= ~(1UL << 11);
+gpio_write(t_gpio *port, uint8_t pin, uint8_t pin_mode){
+	pin += (!pin_mode * 16);
+	port->bsrr = (1UL << pin);
+}
+
+bool
+gpio_read(t_gpio *port, uint32_t pin){
+	return (!(port->idr & (1UL << pin)));
 }
 
 void
 led_on(t_gpio *gpioa){
-	gpioa->bsrr = LED_BS5;
+	gpio_write(gpioa, LED_PIN, 1);
 }
 
 void
 led_off(t_gpio *gpioa){
-	gpioa->bsrr = LED_BR5;
-}
-
-void
-button_init(t_rcc *rcc, t_gpio *gpioc){
-	rcc->ahb1enr |= GPIOCEN;
-
-	gpioc->moder &= ~(1UL<<26);
-	gpioc->moder &= ~(1UL<<27);
+	gpio_write(gpioa, LED_PIN, 0);
 }
 
 bool
 get_button_state(t_gpio *gpioc){
-	return (!(gpioc->idr & BTN_PIN));
+	return gpio_read(gpioc, BTN_PIN);
 }
+
+
