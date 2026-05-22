@@ -12,6 +12,7 @@
 #define GPIOAEN (1 << 0)
 #define GPIOBEN (1 << 1)
 #define GPIOCEN (1 << 2)
+#define GPIODEN (1 << 3)
 
 
 enum e_gpio_value

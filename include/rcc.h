@@ -5,6 +5,6 @@
 
 
 void
-rcc_enable(t_rcc *rcc, uint8_t value);
+rcc_enable(uint32_t value, volatile uint32_t *_register);
 
 #endif

@@ -88,4 +88,25 @@ typedef struct s_systick{
 }t_systick;
 
 
+/*
+ *@brief:
+	sr:		status register
+	dr:		data register
+	brr:	baud rate register
+	cr1:	control register 1
+	cr2:	control register 2
+	cr3:	control register 3
+	gtpr:	Guard time and prescaler register
+ */
+
+typedef struct s_uart{
+	uint32_t	sr;
+	uint32_t	dr;
+	uint32_t	brr;
+	uint32_t	cr1;
+	uint32_t	cr2;
+	uint32_t	cr3;
+	uint32_t	gtpr;
+}t_uart;
+
 #endif

@@ -8,9 +8,11 @@ main(){
 	volatile t_gpio	*gpioa = (t_gpio *)GPIOA_BASE;
 	volatile t_gpio	*gpioc = (t_gpio *)GPIOC_BASE;
 
-	rcc_enable(rcc, GPIOAEN);
+	rcc_enable(GPIOAEN, &rcc->ahb1enr);
 	gpio_init(gpioa, 5, PIN_STATE_OUTPUT);
-	rcc_enable(rcc, GPIOCEN);
+
+	rcc_enable(GPIOCEN, &rcc->ahb1enr);
+
 	gpio_init(gpioc, 13, PIN_STATE_INPUT);
 	bool btn_state = false;
 	while(1){
