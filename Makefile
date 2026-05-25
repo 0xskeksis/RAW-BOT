@@ -1,47 +1,65 @@
 #-------------------------------------------------------------------------------#
-#							POC-arm_bootloader								    #
+#								RAW_BOT								    		#
 #-------------------------------------------------------------------------------#
 
-TARGET			:= boot
-BIN				:= $(TARGET).bin
-ELF				:= $(TARGET).elf
+TARGET		:= boot
+BIN			:= $(TARGET).bin
+ELF			:= $(TARGET).elf
 
-ASM_SRC			:= src/startup.s
-C_SRC			:= src/main.c
+BUILD		:= .objs
 
-ASM_OBJ			:= $(ASM_SRC:.s=.o)
-C_OBJ			:= $(C_SRC:.c=.o)
+ASM_SRC		:= src/startup.s
 
-CC				:= arm-none-eabi-gcc
-OBJCOPY			:= arm-none-eabi-objcopy
+C_SRCS_DIR	:= src
+C_SRCS		:= main.c \
+			   gpio.c \
+			   utils.c \
+			   rcc.c \
+			   uart.c \
 
-LD_SCRIPT		:= linker.ld
 
-CFLAGS			:= -mcpu=cortex-m4 -mthumb -ffreestanding -g -Wall -Wextra -O0
-ASFLAGS			:= $(CFLAGS)
-LDFLAGS			:= -nostdlib -nostartfiles -nodefaultlibs -T $(LD_SCRIPT)
-IFLAGS			:= -I ./include
+SRCS		:= $(addprefix $(C_SRCS_DIR)/, $(C_SRCS))
 
-OBJCOPY_FLAGS	:= -O binary
+ASM_OBJ		:= $(patsubst %.s,$(BUILD)/%.o,$(ASM_SRC))
+C_OBJ		:= $(patsubst %.c,$(BUILD)/%.o,$(SRCS))
+
+OBJS		:= $(ASM_OBJ) $(C_OBJ)
+
+CC			:= arm-none-eabi-gcc
+OBJCOPY		:= arm-none-eabi-objcopy
+
+LD_SCRIPT	:= linker.ld
+
+CFLAGS		:= -mcpu=cortex-m4 -mthumb -ffreestanding -g -Wall -Wextra -O0
+ASFLAGS		:= $(CFLAGS)
+LDFLAGS		:= -nostartfiles -nodefaultlibs -T $(LD_SCRIPT)
+IFLAGS		:= -I ./include
+
+OBJCOPY_FLAGS := -O binary
+
+RM			:= rm -rf
+MKDIR		:= mkdir -p
 
 #-Rules------------------------------------------------------------------------#
 
 all: $(BIN)
 
-$(ASM_OBJ): $(ASM_SRC)
-	$(CC) $(ASFLAGS) -c $< -o $@
+$(BUILD)/%.o: %.s
+	$(MKDIR) $(@D)
+	$(CC) $(ASFLAGS) $(IFLAGS) -c $< -o $@
 
-$(C_OBJ): $(C_SRC)
+$(BUILD)/%.o: %.c
+	$(MKDIR) $(@D)
 	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
 
-$(ELF): $(ASM_OBJ) $(C_OBJ)
-	$(CC) $(LDFLAGS) $(IFLAGS) -o $@ $^
+$(ELF): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^
 
 $(BIN): $(ELF)
 	$(OBJCOPY) $(OBJCOPY_FLAGS) $< $@
 
 clean:
-	rm -f $(ASM_OBJ) $(C_OBJ) $(ELF) $(BIN)
+	$(RM) $(BUILD) $(ELF) $(BIN)
 
 re: clean all
 
