@@ -7,5 +7,6 @@
 #include "rcc.h"
 #include "systick.h"
 #include "utils.h"
+#include "uart.h"
 
 #endif

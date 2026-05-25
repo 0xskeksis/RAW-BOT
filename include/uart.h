@@ -10,4 +10,15 @@
 // PD5
 #define UART2_PIN 5
 
+#include "memory_map.h"
+
+void
+uart_init(t_gpio *gpiod, t_rcc *rcc, volatile t_uart *uart);
+
+int
+_io_putchar(volatile t_uart *uart, int c);
+
+void
+_io_putstr(volatile t_uart *uart, char *str);
+
 #endif

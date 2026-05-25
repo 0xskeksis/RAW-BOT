@@ -15,6 +15,7 @@ C_SRCS		:= main.c \
 			   gpio.c \
 			   utils.c \
 			   rcc.c \
+			   uart.c \
 
 
 SRCS		:= $(addprefix $(C_SRCS_DIR)/, $(C_SRCS))
@@ -31,7 +32,7 @@ LD_SCRIPT	:= linker.ld
 
 CFLAGS		:= -mcpu=cortex-m4 -mthumb -ffreestanding -g -Wall -Wextra -O0
 ASFLAGS		:= $(CFLAGS)
-LDFLAGS		:= -nostdlib -nostartfiles -nodefaultlibs -T $(LD_SCRIPT)
+LDFLAGS		:= -nostartfiles -nodefaultlibs -T $(LD_SCRIPT)
 IFLAGS		:= -I ./include
 
 OBJCOPY_FLAGS := -O binary
